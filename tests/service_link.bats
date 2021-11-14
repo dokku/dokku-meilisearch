@@ -51,25 +51,25 @@ teardown() {
   run dokku "$PLUGIN_COMMAND_PREFIX:link" l my-app
   echo "output: $output"
   echo "status: $status"
-  assert_contains "${lines[*]}" "Already linked as DATABASE_URL"
+  assert_contains "${lines[*]}" "Already linked as MEILLISEARCH_URL"
   assert_failure
 
   dokku "$PLUGIN_COMMAND_PREFIX:unlink" l my-app
 }
 
-@test "($PLUGIN_COMMAND_PREFIX:link) exports DATABASE_URL to app" {
+@test "($PLUGIN_COMMAND_PREFIX:link) exports MEILLISEARCH_URL to app" {
   run dokku "$PLUGIN_COMMAND_PREFIX:link" l my-app
   echo "output: $output"
   echo "status: $status"
-  url=$(dokku config:get my-app DATABASE_URL)
+  url=$(dokku config:get my-app MEILLISEARCH_URL)
   password="$(sudo cat "$PLUGIN_DATA_ROOT/l/PASSWORD")"
   assert_contains "$url" "http://:$password@dokku-meillisearch-l:7700"
   assert_success
   dokku "$PLUGIN_COMMAND_PREFIX:unlink" l my-app
 }
 
-@test "($PLUGIN_COMMAND_PREFIX:link) generates an alternate config url when DATABASE_URL already in use" {
-  dokku config:set my-app DATABASE_URL=http://user:pass@host:7700/db
+@test "($PLUGIN_COMMAND_PREFIX:link) generates an alternate config url when MEILLISEARCH_URL already in use" {
+  dokku config:set my-app MEILLISEARCH_URL=http://user:pass@host:7700/db
   dokku "$PLUGIN_COMMAND_PREFIX:link" l my-app
   run dokku config my-app
   assert_contains "${lines[*]}" "DOKKU_MEILLISEARCH_AQUA_URL"
@@ -94,7 +94,7 @@ teardown() {
 @test "($PLUGIN_COMMAND_PREFIX:link) uses apps MEILLISEARCH_DATABASE_SCHEME variable" {
   dokku config:set my-app MEILLISEARCH_DATABASE_SCHEME=meillisearch2
   dokku "$PLUGIN_COMMAND_PREFIX:link" l my-app
-  url=$(dokku config:get my-app DATABASE_URL)
+  url=$(dokku config:get my-app MEILLISEARCH_URL)
   password="$(sudo cat "$PLUGIN_DATA_ROOT/l/PASSWORD")"
   assert_contains "$url" "http2://:$password@dokku-meillisearch-l:7700"
   assert_success
@@ -103,7 +103,7 @@ teardown() {
 
 @test "($PLUGIN_COMMAND_PREFIX:link) adds a querystring" {
   dokku "$PLUGIN_COMMAND_PREFIX:link" l my-app --querystring "pool=5"
-  url=$(dokku config:get my-app DATABASE_URL)
+  url=$(dokku config:get my-app MEILLISEARCH_URL)
   assert_contains "$url" "?pool=5"
   assert_success
   dokku "$PLUGIN_COMMAND_PREFIX:unlink" l my-app
