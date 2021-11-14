@@ -93,17 +93,6 @@ service_create_container() {
   dokku_log_verbose_quiet "Waiting for container to be ready"
   docker run --rm --link "$SERVICE_NAME:$PLUGIN_COMMAND_PREFIX" "$PLUGIN_WAIT_IMAGE" -p "$PLUGIN_DATASTORE_WAIT_PORT" >/dev/null
 
-  dokku_log_verbose_quiet "Creating container database"
-  docker exec "$SERVICE_NAME" su - meillisearch -c "createdb -E utf8 $DATABASE_NAME" 2>/dev/null || dokku_log_verbose_quiet 'Already exists'
-
-  dokku_log_verbose_quiet "Securing connection to database"
-  service_stop "$SERVICE" >/dev/null
-  docker run --rm -i -v "$SERVICE_HOST_ROOT/data:/var/lib/meillisearchql/data" "$PLUGIN_IMAGE:$PLUGIN_IMAGE_VERSION" bash -s <"$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/scripts/enable_ssl.sh" &>/dev/null
-
-  PREVIOUS_ID=$(docker ps -aq --no-trunc --filter "status=exited" --filter "name=^/$SERVICE_NAME$" --format '{{ .ID }}') || true
-  docker start "$PREVIOUS_ID" >/dev/null
-  service_port_unpause "$SERVICE"
-
   dokku_log_info2 "$PLUGIN_SERVICE container created: $SERVICE"
   service_info "$SERVICE"
 }
