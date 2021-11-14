@@ -29,7 +29,7 @@ meillisearch:linked <service> <app>                # check if the meillisearch s
 meillisearch:links <service>                       # list all apps linked to the meillisearch service
 meillisearch:list                                  # list all meillisearch services
 meillisearch:logs <service> [-t|--tail] <tail-num-optional> # print the most recent log(s) for this service
-meillisearch:promote <service> <app>               # promote service <service> as DATABASE_URL in <app>
+meillisearch:promote <service> <app>               # promote service <service> as MEILLISEARCH_URL in <app>
 meillisearch:restart <service>                     # graceful shutdown and restart of the meillisearch service container
 meillisearch:start <service>                       # start a previously stopped meillisearch service
 meillisearch:stop <service>                        # stop a running meillisearch service
@@ -200,7 +200,7 @@ DOKKU_MEILLISEARCH_LOLLIPOP_PORT_7700_TCP_ADDR=172.17.0.1
 The following will be set on the linked application by default:
 
 ```
-DATABASE_URL=http://lollipop:SOME_PASSWORD@dokku-meillisearch-lollipop:7700/lollipop
+MEILLISEARCH_URL=http://lollipop:SOME_PASSWORD@dokku-meillisearch-lollipop:7700/lollipop
 ```
 
 The host exposed here only works internally in docker containers. If you want your container to be reachable from outside, you should use the `expose` subcommand. Another service can be linked to your app:
@@ -209,14 +209,14 @@ The host exposed here only works internally in docker containers. If you want yo
 dokku meillisearch:link other_service playground
 ```
 
-It is possible to change the protocol for `DATABASE_URL` by setting the environment variable `MEILLISEARCH_DATABASE_SCHEME` on the app. Doing so will after linking will cause the plugin to think the service is not linked, and we advise you to unlink before proceeding.
+It is possible to change the protocol for `MEILLISEARCH_URL` by setting the environment variable `MEILLISEARCH_DATABASE_SCHEME` on the app. Doing so will after linking will cause the plugin to think the service is not linked, and we advise you to unlink before proceeding.
 
 ```shell
 dokku config:set playground MEILLISEARCH_DATABASE_SCHEME=http2
 dokku meillisearch:link lollipop playground
 ```
 
-This will cause `DATABASE_URL` to be set as:
+This will cause `MEILLISEARCH_URL` to be set as:
 
 ```
 http2://lollipop:SOME_PASSWORD@dokku-meillisearch-lollipop:7700/lollipop
@@ -294,7 +294,7 @@ Unexpose the service, removing access to it from the public interface (`0.0.0.0`
 dokku meillisearch:unexpose lollipop
 ```
 
-### promote service <service> as DATABASE_URL in <app>
+### promote service <service> as MEILLISEARCH_URL in <app>
 
 ```shell
 # usage
@@ -304,7 +304,7 @@ dokku meillisearch:promote <service> <app>
 If you have a meillisearch service linked to an app and try to link another meillisearch service another link environment variable will be generated automatically:
 
 ```
-DOKKU_DATABASE_BLUE_URL=http://other_service:ANOTHER_PASSWORD@dokku-meillisearch-other-service:7700/other_service
+DOKKU_MEILLISEARCH_BLUE_URL=http://other_service:ANOTHER_PASSWORD@dokku-meillisearch-other-service:7700/other_service
 ```
 
 You can promote the new service to be the primary one:
@@ -315,12 +315,12 @@ You can promote the new service to be the primary one:
 dokku meillisearch:promote other_service playground
 ```
 
-This will replace `DATABASE_URL` with the url from other_service and generate another environment variable to hold the previous value if necessary. You could end up with the following for example:
+This will replace `MEILLISEARCH_URL` with the url from other_service and generate another environment variable to hold the previous value if necessary. You could end up with the following for example:
 
 ```
-DATABASE_URL=http://other_service:ANOTHER_PASSWORD@dokku-meillisearch-other-service:7700/other_service
-DOKKU_DATABASE_BLUE_URL=http://other_service:ANOTHER_PASSWORD@dokku-meillisearch-other-service:7700/other_service
-DOKKU_DATABASE_SILVER_URL=http://lollipop:SOME_PASSWORD@dokku-meillisearch-lollipop:7700/lollipop
+MEILLISEARCH_URL=http://other_service:ANOTHER_PASSWORD@dokku-meillisearch-other-service:7700/other_service
+DOKKU_MEILLISEARCH_BLUE_URL=http://other_service:ANOTHER_PASSWORD@dokku-meillisearch-other-service:7700/other_service
+DOKKU_MEILLISEARCH_SILVER_URL=http://lollipop:SOME_PASSWORD@dokku-meillisearch-lollipop:7700/lollipop
 ```
 
 ### start a previously stopped meillisearch service
