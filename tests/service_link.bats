@@ -51,33 +51,33 @@ teardown() {
   run dokku "$PLUGIN_COMMAND_PREFIX:link" l my-app
   echo "output: $output"
   echo "status: $status"
-  assert_contains "${lines[*]}" "Already linked as MEILLISEARCH_URL"
+  assert_contains "${lines[*]}" "Already linked as MEILISEARCH_URL"
   assert_failure
 
   dokku "$PLUGIN_COMMAND_PREFIX:unlink" l my-app
 }
 
-@test "($PLUGIN_COMMAND_PREFIX:link) exports MEILLISEARCH_URL to app" {
+@test "($PLUGIN_COMMAND_PREFIX:link) exports MEILISEARCH_URL to app" {
   run dokku "$PLUGIN_COMMAND_PREFIX:link" l my-app
   echo "output: $output"
   echo "status: $status"
-  url=$(dokku config:get my-app MEILLISEARCH_URL)
+  url=$(dokku config:get my-app MEILISEARCH_URL)
   password="$(sudo cat "$PLUGIN_DATA_ROOT/l/PASSWORD")"
-  assert_contains "$url" "http://:$password@dokku-meillisearch-l:7700"
+  assert_contains "$url" "http://:$password@dokku-meilisearch-l:7700"
   assert_success
   dokku "$PLUGIN_COMMAND_PREFIX:unlink" l my-app
 }
 
-@test "($PLUGIN_COMMAND_PREFIX:link) generates an alternate config url when MEILLISEARCH_URL already in use" {
-  dokku config:set my-app MEILLISEARCH_URL=http://user:pass@host:7700/db
+@test "($PLUGIN_COMMAND_PREFIX:link) generates an alternate config url when MEILISEARCH_URL already in use" {
+  dokku config:set my-app MEILISEARCH_URL=http://user:pass@host:7700/db
   dokku "$PLUGIN_COMMAND_PREFIX:link" l my-app
   run dokku config my-app
-  assert_contains "${lines[*]}" "DOKKU_MEILLISEARCH_AQUA_URL"
+  assert_contains "${lines[*]}" "DOKKU_MEILISEARCH_AQUA_URL"
   assert_success
 
   dokku "$PLUGIN_COMMAND_PREFIX:link" m my-app
   run dokku config my-app
-  assert_contains "${lines[*]}" "DOKKU_MEILLISEARCH_BLACK_URL"
+  assert_contains "${lines[*]}" "DOKKU_MEILISEARCH_BLACK_URL"
   assert_success
   dokku "$PLUGIN_COMMAND_PREFIX:unlink" m my-app
   dokku "$PLUGIN_COMMAND_PREFIX:unlink" l my-app
@@ -86,24 +86,24 @@ teardown() {
 @test "($PLUGIN_COMMAND_PREFIX:link) links to app with docker-options" {
   dokku "$PLUGIN_COMMAND_PREFIX:link" l my-app
   run dokku docker-options:report my-app
-  assert_contains "${lines[*]}" "--link dokku.meillisearch.l:dokku-meillisearch-l"
+  assert_contains "${lines[*]}" "--link dokku.meilisearch.l:dokku-meilisearch-l"
   assert_success
   dokku "$PLUGIN_COMMAND_PREFIX:unlink" l my-app
 }
 
-@test "($PLUGIN_COMMAND_PREFIX:link) uses apps MEILLISEARCH_DATABASE_SCHEME variable" {
-  dokku config:set my-app MEILLISEARCH_DATABASE_SCHEME=http2
+@test "($PLUGIN_COMMAND_PREFIX:link) uses apps MEILISEARCH_DATABASE_SCHEME variable" {
+  dokku config:set my-app MEILISEARCH_DATABASE_SCHEME=http2
   dokku "$PLUGIN_COMMAND_PREFIX:link" l my-app
-  url=$(dokku config:get my-app MEILLISEARCH_URL)
+  url=$(dokku config:get my-app MEILISEARCH_URL)
   password="$(sudo cat "$PLUGIN_DATA_ROOT/l/PASSWORD")"
-  assert_contains "$url" "http2://:$password@dokku-meillisearch-l:7700"
+  assert_contains "$url" "http2://:$password@dokku-meilisearch-l:7700"
   assert_success
   dokku "$PLUGIN_COMMAND_PREFIX:unlink" l my-app
 }
 
 @test "($PLUGIN_COMMAND_PREFIX:link) adds a querystring" {
   dokku "$PLUGIN_COMMAND_PREFIX:link" l my-app --querystring "pool=5"
-  url=$(dokku config:get my-app MEILLISEARCH_URL)
+  url=$(dokku config:get my-app MEILISEARCH_URL)
   assert_contains "$url" "?pool=5"
   assert_success
   dokku "$PLUGIN_COMMAND_PREFIX:unlink" l my-app
@@ -113,7 +113,7 @@ teardown() {
   dokku "$PLUGIN_COMMAND_PREFIX:link" l my-app --alias "ALIAS"
   url=$(dokku config:get my-app ALIAS_URL)
   password="$(sudo cat "$PLUGIN_DATA_ROOT/l/PASSWORD")"
-  assert_contains "$url" "http://:$password@dokku-meillisearch-l:7700"
+  assert_contains "$url" "http://:$password@dokku-meilisearch-l:7700"
   assert_success
   dokku "$PLUGIN_COMMAND_PREFIX:unlink" l my-app
 }

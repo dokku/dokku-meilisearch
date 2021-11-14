@@ -87,7 +87,7 @@ service_create_container() {
   [[ -f "$SERVICE_ROOT/IMAGE_VERSION" ]] && PLUGIN_IMAGE_VERSION="$(cat "$SERVICE_ROOT/IMAGE_VERSION")"
 
   # shellcheck disable=SC2086
-  ID=$(docker run --name "$SERVICE_NAME" $MEMORY_LIMIT $SHM_SIZE -v "$SERVICE_HOST_ROOT/data:/data.ms" -e "MEILI_MASTER_KEY=$PASSWORD" -e "MEILI_HTTP_ADDR=0.0.0.0:7700" -e "MEILI_NO_ANALYTICS=true" --env-file="$SERVICE_ROOT/ENV" -d --restart always --label dokku=service --label dokku.service=meillisearch "$PLUGIN_IMAGE:$PLUGIN_IMAGE_VERSION" $CONFIG_OPTIONS)
+  ID=$(docker run --name "$SERVICE_NAME" $MEMORY_LIMIT $SHM_SIZE -v "$SERVICE_HOST_ROOT/data:/data.ms" -e "MEILI_MASTER_KEY=$PASSWORD" -e "MEILI_HTTP_ADDR=0.0.0.0:7700" -e "MEILI_NO_ANALYTICS=true" --env-file="$SERVICE_ROOT/ENV" -d --restart always --label dokku=service --label dokku.service=meilisearch "$PLUGIN_IMAGE:$PLUGIN_IMAGE_VERSION" $CONFIG_OPTIONS)
   echo "$ID" >"$SERVICE_ROOT/ID"
 
   dokku_log_verbose_quiet "Waiting for container to be ready"

@@ -1,6 +1,6 @@
-# dokku meillisearch [![Build Status](https://img.shields.io/github/workflow/status/dokku/dokku-meillisearch/CI/master?style=flat-square "Build Status")](https://github.com/dokku/dokku-meillisearch/actions/workflows/ci.yml?query=branch%3Amaster) [![IRC Network](https://img.shields.io/badge/irc-libera-blue.svg?style=flat-square "IRC Libera")](https://webchat.libera.chat/?channels=dokku)
+# dokku meilisearch [![Build Status](https://img.shields.io/github/workflow/status/dokku/dokku-meilisearch/CI/master?style=flat-square "Build Status")](https://github.com/dokku/dokku-meilisearch/actions/workflows/ci.yml?query=branch%3Amaster) [![IRC Network](https://img.shields.io/badge/irc-libera-blue.svg?style=flat-square "IRC Libera")](https://webchat.libera.chat/?channels=dokku)
 
-Official meillisearch plugin for dokku. Currently defaults to installing [getmeili/meilisearch v0.23.1](https://hub.docker.com/r/getmeili/meilisearch/).
+Official meilisearch plugin for dokku. Currently defaults to installing [getmeili/meilisearch v0.23.1](https://hub.docker.com/r/getmeili/meilisearch/).
 
 ## Requirements
 
@@ -11,44 +11,44 @@ Official meillisearch plugin for dokku. Currently defaults to installing [getmei
 
 ```shell
 # on 0.19.x+
-sudo dokku plugin:install https://github.com/dokku/dokku-meillisearch.git meillisearch
+sudo dokku plugin:install https://github.com/dokku/dokku-meilisearch.git meilisearch
 ```
 
 ## Commands
 
 ```
-meillisearch:app-links <app>                       # list all meillisearch service links for a given app
-meillisearch:create <service> [--create-flags...]  # create a meillisearch service
-meillisearch:destroy <service> [-f|--force]        # delete the meillisearch service/data/container if there are no links left
-meillisearch:enter <service>                       # enter or run a command in a running meillisearch service container
-meillisearch:exists <service>                      # check if the meillisearch service exists
-meillisearch:expose <service> <ports...>           # expose a meillisearch service on custom host:port if provided (random port on the 0.0.0.0 interface if otherwise unspecified)
-meillisearch:info <service> [--single-info-flag]   # print the service information
-meillisearch:link <service> <app> [--link-flags...] # link the meillisearch service to the app
-meillisearch:linked <service> <app>                # check if the meillisearch service is linked to an app
-meillisearch:links <service>                       # list all apps linked to the meillisearch service
-meillisearch:list                                  # list all meillisearch services
-meillisearch:logs <service> [-t|--tail] <tail-num-optional> # print the most recent log(s) for this service
-meillisearch:promote <service> <app>               # promote service <service> as MEILLISEARCH_URL in <app>
-meillisearch:restart <service>                     # graceful shutdown and restart of the meillisearch service container
-meillisearch:start <service>                       # start a previously stopped meillisearch service
-meillisearch:stop <service>                        # stop a running meillisearch service
-meillisearch:unexpose <service>                    # unexpose a previously exposed meillisearch service
-meillisearch:unlink <service> <app>                # unlink the meillisearch service from the app
-meillisearch:upgrade <service> [--upgrade-flags...] # upgrade service <service> to the specified versions
+meilisearch:app-links <app>                        # list all meilisearch service links for a given app
+meilisearch:create <service> [--create-flags...]   # create a meilisearch service
+meilisearch:destroy <service> [-f|--force]         # delete the meilisearch service/data/container if there are no links left
+meilisearch:enter <service>                        # enter or run a command in a running meilisearch service container
+meilisearch:exists <service>                       # check if the meilisearch service exists
+meilisearch:expose <service> <ports...>            # expose a meilisearch service on custom host:port if provided (random port on the 0.0.0.0 interface if otherwise unspecified)
+meilisearch:info <service> [--single-info-flag]    # print the service information
+meilisearch:link <service> <app> [--link-flags...] # link the meilisearch service to the app
+meilisearch:linked <service> <app>                 # check if the meilisearch service is linked to an app
+meilisearch:links <service>                        # list all apps linked to the meilisearch service
+meilisearch:list                                   # list all meilisearch services
+meilisearch:logs <service> [-t|--tail] <tail-num-optional> # print the most recent log(s) for this service
+meilisearch:promote <service> <app>                # promote service <service> as MEILISEARCH_URL in <app>
+meilisearch:restart <service>                      # graceful shutdown and restart of the meilisearch service container
+meilisearch:start <service>                        # start a previously stopped meilisearch service
+meilisearch:stop <service>                         # stop a running meilisearch service
+meilisearch:unexpose <service>                     # unexpose a previously exposed meilisearch service
+meilisearch:unlink <service> <app>                 # unlink the meilisearch service from the app
+meilisearch:upgrade <service> [--upgrade-flags...] # upgrade service <service> to the specified versions
 ```
 
 ## Usage
 
-Help for any commands can be displayed by specifying the command as an argument to meillisearch:help. Plugin help output in conjunction with any files in the `docs/` folder is used to generate the plugin documentation. Please consult the `meillisearch:help` command for any undocumented commands.
+Help for any commands can be displayed by specifying the command as an argument to meilisearch:help. Plugin help output in conjunction with any files in the `docs/` folder is used to generate the plugin documentation. Please consult the `meilisearch:help` command for any undocumented commands.
 
 ### Basic Usage
 
-### create a meillisearch service
+### create a meilisearch service
 
 ```shell
 # usage
-dokku meillisearch:create <service> [--create-flags...]
+dokku meilisearch:create <service> [--create-flags...]
 ```
 
 flags:
@@ -60,34 +60,34 @@ flags:
 - `-m|--memory MEMORY`: container memory limit (default: unlimited)
 - `-p|--password PASSWORD`: override the user-level service password
 - `-r|--root-password PASSWORD`: override the root-level service password
-- `-s|--shm-size SHM_SIZE`: override shared memory size for meillisearch docker container
+- `-s|--shm-size SHM_SIZE`: override shared memory size for meilisearch docker container
 
-Create a meillisearch service named lollipop:
+Create a meilisearch service named lollipop:
 
 ```shell
-dokku meillisearch:create lollipop
+dokku meilisearch:create lollipop
 ```
 
 You can also specify the image and image version to use for the service. It *must* be compatible with the getmeili/meilisearch image.
 
 ```shell
-export MEILLISEARCH_IMAGE="getmeili/meilisearch"
-export MEILLISEARCH_IMAGE_VERSION="${PLUGIN_IMAGE_VERSION}"
-dokku meillisearch:create lollipop
+export MEILISEARCH_IMAGE="getmeili/meilisearch"
+export MEILISEARCH_IMAGE_VERSION="${PLUGIN_IMAGE_VERSION}"
+dokku meilisearch:create lollipop
 ```
 
-You can also specify custom environment variables to start the meillisearch service in semi-colon separated form.
+You can also specify custom environment variables to start the meilisearch service in semi-colon separated form.
 
 ```shell
-export MEILLISEARCH_CUSTOM_ENV="USER=alpha;HOST=beta"
-dokku meillisearch:create lollipop
+export MEILISEARCH_CUSTOM_ENV="USER=alpha;HOST=beta"
+dokku meilisearch:create lollipop
 ```
 
 ### print the service information
 
 ```shell
 # usage
-dokku meillisearch:info <service> [--single-info-flag]
+dokku meilisearch:info <service> [--single-info-flag]
 ```
 
 flags:
@@ -106,42 +106,42 @@ flags:
 Get connection information as follows:
 
 ```shell
-dokku meillisearch:info lollipop
+dokku meilisearch:info lollipop
 ```
 
 You can also retrieve a specific piece of service info via flags:
 
 ```shell
-dokku meillisearch:info lollipop --config-dir
-dokku meillisearch:info lollipop --data-dir
-dokku meillisearch:info lollipop --dsn
-dokku meillisearch:info lollipop --exposed-ports
-dokku meillisearch:info lollipop --id
-dokku meillisearch:info lollipop --internal-ip
-dokku meillisearch:info lollipop --links
-dokku meillisearch:info lollipop --service-root
-dokku meillisearch:info lollipop --status
-dokku meillisearch:info lollipop --version
+dokku meilisearch:info lollipop --config-dir
+dokku meilisearch:info lollipop --data-dir
+dokku meilisearch:info lollipop --dsn
+dokku meilisearch:info lollipop --exposed-ports
+dokku meilisearch:info lollipop --id
+dokku meilisearch:info lollipop --internal-ip
+dokku meilisearch:info lollipop --links
+dokku meilisearch:info lollipop --service-root
+dokku meilisearch:info lollipop --status
+dokku meilisearch:info lollipop --version
 ```
 
-### list all meillisearch services
+### list all meilisearch services
 
 ```shell
 # usage
-dokku meillisearch:list 
+dokku meilisearch:list 
 ```
 
 List all services:
 
 ```shell
-dokku meillisearch:list
+dokku meilisearch:list
 ```
 
 ### print the most recent log(s) for this service
 
 ```shell
 # usage
-dokku meillisearch:logs <service> [-t|--tail] <tail-num-optional>
+dokku meilisearch:logs <service> [-t|--tail] <tail-num-optional>
 ```
 
 flags:
@@ -151,26 +151,26 @@ flags:
 You can tail logs for a particular service:
 
 ```shell
-dokku meillisearch:logs lollipop
+dokku meilisearch:logs lollipop
 ```
 
 By default, logs will not be tailed, but you can do this with the --tail flag:
 
 ```shell
-dokku meillisearch:logs lollipop --tail
+dokku meilisearch:logs lollipop --tail
 ```
 
 The default tail setting is to show all logs, but an initial count can also be specified:
 
 ```shell
-dokku meillisearch:logs lollipop --tail 5
+dokku meilisearch:logs lollipop --tail 5
 ```
 
-### link the meillisearch service to the app
+### link the meilisearch service to the app
 
 ```shell
 # usage
-dokku meillisearch:link <service> <app> [--link-flags...]
+dokku meilisearch:link <service> <app> [--link-flags...]
 ```
 
 flags:
@@ -178,74 +178,74 @@ flags:
 - `-a|--alias "BLUE_DATABASE"`: an alternative alias to use for linking to an app via environment variable
 - `-q|--querystring "pool=5"`: ampersand delimited querystring arguments to append to the service link
 
-A meillisearch service can be linked to a container. This will use native docker links via the docker-options plugin. Here we link it to our `playground` app.
+A meilisearch service can be linked to a container. This will use native docker links via the docker-options plugin. Here we link it to our `playground` app.
 
 > NOTE: this will restart your app
 
 ```shell
-dokku meillisearch:link lollipop playground
+dokku meilisearch:link lollipop playground
 ```
 
 The following environment variables will be set automatically by docker (not on the app itself, so they won’t be listed when calling dokku config):
 
 ```
-DOKKU_MEILLISEARCH_LOLLIPOP_NAME=/lollipop/DATABASE
-DOKKU_MEILLISEARCH_LOLLIPOP_PORT=tcp://172.17.0.1:7700
-DOKKU_MEILLISEARCH_LOLLIPOP_PORT_7700_TCP=tcp://172.17.0.1:7700
-DOKKU_MEILLISEARCH_LOLLIPOP_PORT_7700_TCP_PROTO=tcp
-DOKKU_MEILLISEARCH_LOLLIPOP_PORT_7700_TCP_PORT=7700
-DOKKU_MEILLISEARCH_LOLLIPOP_PORT_7700_TCP_ADDR=172.17.0.1
+DOKKU_MEILISEARCH_LOLLIPOP_NAME=/lollipop/DATABASE
+DOKKU_MEILISEARCH_LOLLIPOP_PORT=tcp://172.17.0.1:7700
+DOKKU_MEILISEARCH_LOLLIPOP_PORT_7700_TCP=tcp://172.17.0.1:7700
+DOKKU_MEILISEARCH_LOLLIPOP_PORT_7700_TCP_PROTO=tcp
+DOKKU_MEILISEARCH_LOLLIPOP_PORT_7700_TCP_PORT=7700
+DOKKU_MEILISEARCH_LOLLIPOP_PORT_7700_TCP_ADDR=172.17.0.1
 ```
 
 The following will be set on the linked application by default:
 
 ```
-MEILLISEARCH_URL=http://lollipop:SOME_PASSWORD@dokku-meillisearch-lollipop:7700/lollipop
+MEILISEARCH_URL=http://lollipop:SOME_PASSWORD@dokku-meilisearch-lollipop:7700/lollipop
 ```
 
 The host exposed here only works internally in docker containers. If you want your container to be reachable from outside, you should use the `expose` subcommand. Another service can be linked to your app:
 
 ```shell
-dokku meillisearch:link other_service playground
+dokku meilisearch:link other_service playground
 ```
 
-It is possible to change the protocol for `MEILLISEARCH_URL` by setting the environment variable `MEILLISEARCH_DATABASE_SCHEME` on the app. Doing so will after linking will cause the plugin to think the service is not linked, and we advise you to unlink before proceeding.
+It is possible to change the protocol for `MEILISEARCH_URL` by setting the environment variable `MEILISEARCH_DATABASE_SCHEME` on the app. Doing so will after linking will cause the plugin to think the service is not linked, and we advise you to unlink before proceeding.
 
 ```shell
-dokku config:set playground MEILLISEARCH_DATABASE_SCHEME=http2
-dokku meillisearch:link lollipop playground
+dokku config:set playground MEILISEARCH_DATABASE_SCHEME=http2
+dokku meilisearch:link lollipop playground
 ```
 
-This will cause `MEILLISEARCH_URL` to be set as:
+This will cause `MEILISEARCH_URL` to be set as:
 
 ```
-http2://lollipop:SOME_PASSWORD@dokku-meillisearch-lollipop:7700/lollipop
+http2://lollipop:SOME_PASSWORD@dokku-meilisearch-lollipop:7700/lollipop
 ```
 
-### unlink the meillisearch service from the app
+### unlink the meilisearch service from the app
 
 ```shell
 # usage
-dokku meillisearch:unlink <service> <app>
+dokku meilisearch:unlink <service> <app>
 ```
 
-You can unlink a meillisearch service:
+You can unlink a meilisearch service:
 
 > NOTE: this will restart your app and unset related environment variables
 
 ```shell
-dokku meillisearch:unlink lollipop playground
+dokku meilisearch:unlink lollipop playground
 ```
 
 ### Service Lifecycle
 
 The lifecycle of each service can be managed through the following commands:
 
-### enter or run a command in a running meillisearch service container
+### enter or run a command in a running meilisearch service container
 
 ```shell
 # usage
-dokku meillisearch:enter <service>
+dokku meilisearch:enter <service>
 ```
 
 A bash prompt can be opened against a running service. Filesystem changes will not be saved to disk.
@@ -253,58 +253,58 @@ A bash prompt can be opened against a running service. Filesystem changes will n
 > NOTE: disconnecting from ssh while running this command may leave zombie processes due to moby/moby#9098
 
 ```shell
-dokku meillisearch:enter lollipop
+dokku meilisearch:enter lollipop
 ```
 
 You may also run a command directly against the service. Filesystem changes will not be saved to disk.
 
 ```shell
-dokku meillisearch:enter lollipop touch /tmp/test
+dokku meilisearch:enter lollipop touch /tmp/test
 ```
 
-### expose a meillisearch service on custom host:port if provided (random port on the 0.0.0.0 interface if otherwise unspecified)
+### expose a meilisearch service on custom host:port if provided (random port on the 0.0.0.0 interface if otherwise unspecified)
 
 ```shell
 # usage
-dokku meillisearch:expose <service> <ports...>
+dokku meilisearch:expose <service> <ports...>
 ```
 
 Expose the service on the service's normal ports, allowing access to it from the public interface (`0.0.0.0`):
 
 ```shell
-dokku meillisearch:expose lollipop 7700
+dokku meilisearch:expose lollipop 7700
 ```
 
 Expose the service on the service's normal ports, with the first on a specified ip adddress (127.0.0.1):
 
 ```shell
-dokku meillisearch:expose lollipop 127.0.0.1:7700
+dokku meilisearch:expose lollipop 127.0.0.1:7700
 ```
 
-### unexpose a previously exposed meillisearch service
+### unexpose a previously exposed meilisearch service
 
 ```shell
 # usage
-dokku meillisearch:unexpose <service>
+dokku meilisearch:unexpose <service>
 ```
 
 Unexpose the service, removing access to it from the public interface (`0.0.0.0`):
 
 ```shell
-dokku meillisearch:unexpose lollipop
+dokku meilisearch:unexpose lollipop
 ```
 
-### promote service <service> as MEILLISEARCH_URL in <app>
+### promote service <service> as MEILISEARCH_URL in <app>
 
 ```shell
 # usage
-dokku meillisearch:promote <service> <app>
+dokku meilisearch:promote <service> <app>
 ```
 
-If you have a meillisearch service linked to an app and try to link another meillisearch service another link environment variable will be generated automatically:
+If you have a meilisearch service linked to an app and try to link another meilisearch service another link environment variable will be generated automatically:
 
 ```
-DOKKU_MEILLISEARCH_BLUE_URL=http://other_service:ANOTHER_PASSWORD@dokku-meillisearch-other-service:7700/other_service
+DOKKU_MEILISEARCH_BLUE_URL=http://other_service:ANOTHER_PASSWORD@dokku-meilisearch-other-service:7700/other_service
 ```
 
 You can promote the new service to be the primary one:
@@ -312,61 +312,61 @@ You can promote the new service to be the primary one:
 > NOTE: this will restart your app
 
 ```shell
-dokku meillisearch:promote other_service playground
+dokku meilisearch:promote other_service playground
 ```
 
-This will replace `MEILLISEARCH_URL` with the url from other_service and generate another environment variable to hold the previous value if necessary. You could end up with the following for example:
+This will replace `MEILISEARCH_URL` with the url from other_service and generate another environment variable to hold the previous value if necessary. You could end up with the following for example:
 
 ```
-MEILLISEARCH_URL=http://other_service:ANOTHER_PASSWORD@dokku-meillisearch-other-service:7700/other_service
-DOKKU_MEILLISEARCH_BLUE_URL=http://other_service:ANOTHER_PASSWORD@dokku-meillisearch-other-service:7700/other_service
-DOKKU_MEILLISEARCH_SILVER_URL=http://lollipop:SOME_PASSWORD@dokku-meillisearch-lollipop:7700/lollipop
+MEILISEARCH_URL=http://other_service:ANOTHER_PASSWORD@dokku-meilisearch-other-service:7700/other_service
+DOKKU_MEILISEARCH_BLUE_URL=http://other_service:ANOTHER_PASSWORD@dokku-meilisearch-other-service:7700/other_service
+DOKKU_MEILISEARCH_SILVER_URL=http://lollipop:SOME_PASSWORD@dokku-meilisearch-lollipop:7700/lollipop
 ```
 
-### start a previously stopped meillisearch service
+### start a previously stopped meilisearch service
 
 ```shell
 # usage
-dokku meillisearch:start <service>
+dokku meilisearch:start <service>
 ```
 
 Start the service:
 
 ```shell
-dokku meillisearch:start lollipop
+dokku meilisearch:start lollipop
 ```
 
-### stop a running meillisearch service
+### stop a running meilisearch service
 
 ```shell
 # usage
-dokku meillisearch:stop <service>
+dokku meilisearch:stop <service>
 ```
 
 Stop the service and the running container:
 
 ```shell
-dokku meillisearch:stop lollipop
+dokku meilisearch:stop lollipop
 ```
 
-### graceful shutdown and restart of the meillisearch service container
+### graceful shutdown and restart of the meilisearch service container
 
 ```shell
 # usage
-dokku meillisearch:restart <service>
+dokku meilisearch:restart <service>
 ```
 
 Restart the service:
 
 ```shell
-dokku meillisearch:restart lollipop
+dokku meilisearch:restart lollipop
 ```
 
 ### upgrade service <service> to the specified versions
 
 ```shell
 # usage
-dokku meillisearch:upgrade <service> [--upgrade-flags...]
+dokku meilisearch:upgrade <service> [--upgrade-flags...]
 ```
 
 flags:
@@ -376,72 +376,72 @@ flags:
 - `-i|--image IMAGE`: the image name to start the service with
 - `-I|--image-version IMAGE_VERSION`: the image version to start the service with
 - `-R|--restart-apps "true"`: whether to force an app restart
-- `-s|--shm-size SHM_SIZE`: override shared memory size for meillisearch docker container
+- `-s|--shm-size SHM_SIZE`: override shared memory size for meilisearch docker container
 
 You can upgrade an existing service to a new image or image-version:
 
 ```shell
-dokku meillisearch:upgrade lollipop
+dokku meilisearch:upgrade lollipop
 ```
 
 ### Service Automation
 
 Service scripting can be executed using the following commands:
 
-### list all meillisearch service links for a given app
+### list all meilisearch service links for a given app
 
 ```shell
 # usage
-dokku meillisearch:app-links <app>
+dokku meilisearch:app-links <app>
 ```
 
-List all meillisearch services that are linked to the `playground` app.
+List all meilisearch services that are linked to the `playground` app.
 
 ```shell
-dokku meillisearch:app-links playground
+dokku meilisearch:app-links playground
 ```
 
-### check if the meillisearch service exists
-
-```shell
-# usage
-dokku meillisearch:exists <service>
-```
-
-Here we check if the lollipop meillisearch service exists.
-
-```shell
-dokku meillisearch:exists lollipop
-```
-
-### check if the meillisearch service is linked to an app
+### check if the meilisearch service exists
 
 ```shell
 # usage
-dokku meillisearch:linked <service> <app>
+dokku meilisearch:exists <service>
 ```
 
-Here we check if the lollipop meillisearch service is linked to the `playground` app.
+Here we check if the lollipop meilisearch service exists.
 
 ```shell
-dokku meillisearch:linked lollipop playground
+dokku meilisearch:exists lollipop
 ```
 
-### list all apps linked to the meillisearch service
+### check if the meilisearch service is linked to an app
 
 ```shell
 # usage
-dokku meillisearch:links <service>
+dokku meilisearch:linked <service> <app>
 ```
 
-List all apps linked to the `lollipop` meillisearch service.
+Here we check if the lollipop meilisearch service is linked to the `playground` app.
 
 ```shell
-dokku meillisearch:links lollipop
+dokku meilisearch:linked lollipop playground
+```
+
+### list all apps linked to the meilisearch service
+
+```shell
+# usage
+dokku meilisearch:links <service>
+```
+
+List all apps linked to the `lollipop` meilisearch service.
+
+```shell
+dokku meilisearch:links lollipop
 ```
 
 ### Disabling `docker pull` calls
 
-If you wish to disable the `docker pull` calls that the plugin triggers, you may set the `MEILLISEARCH_DISABLE_PULL` environment variable to `true`. Once disabled, you will need to pull the service image you wish to deploy as shown in the `stderr` output.
+If you wish to disable the `docker pull` calls that the plugin triggers, you may set the `MEILISEARCH_DISABLE_PULL` environment variable to `true`. Once disabled, you will need to pull the service image you wish to deploy as shown in the `stderr` output.
 
 Please ensure the proper images are in place when `docker pull` is disabled.

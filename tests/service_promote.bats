@@ -35,28 +35,28 @@ teardown() {
 
 @test "($PLUGIN_COMMAND_PREFIX:promote) error when the service is already promoted" {
   run dokku "$PLUGIN_COMMAND_PREFIX:promote" l my-app
-  assert_contains "${lines[*]}" "already promoted as MEILLISEARCH_URL"
+  assert_contains "${lines[*]}" "already promoted as MEILISEARCH_URL"
 }
 
-@test "($PLUGIN_COMMAND_PREFIX:promote) changes MEILLISEARCH_URL" {
+@test "($PLUGIN_COMMAND_PREFIX:promote) changes MEILISEARCH_URL" {
   password="$(sudo cat "$PLUGIN_DATA_ROOT/l/PASSWORD")"
-  dokku config:set my-app "MEILLISEARCH_URL=http://:p@host:7700" "DOKKU_MEILLISEARCH_BLUE_URL=http://:$password@dokku-meillisearch-l:7700"
+  dokku config:set my-app "MEILISEARCH_URL=http://:p@host:7700" "DOKKU_MEILISEARCH_BLUE_URL=http://:$password@dokku-meilisearch-l:7700"
   dokku "$PLUGIN_COMMAND_PREFIX:promote" l my-app
-  url=$(dokku config:get my-app MEILLISEARCH_URL)
-  assert_equal "$url" "http://:$password@dokku-meillisearch-l:7700"
+  url=$(dokku config:get my-app MEILISEARCH_URL)
+  assert_equal "$url" "http://:$password@dokku-meilisearch-l:7700"
 }
 
 @test "($PLUGIN_COMMAND_PREFIX:promote) creates new config url when needed" {
   password="$(sudo cat "$PLUGIN_DATA_ROOT/l/PASSWORD")"
-  dokku config:set my-app "MEILLISEARCH_URL=http://:p@host:7700" "DOKKU_MEILLISEARCH_BLUE_URL=http://:$password@dokku-meillisearch-l:7700"
+  dokku config:set my-app "MEILISEARCH_URL=http://:p@host:7700" "DOKKU_MEILISEARCH_BLUE_URL=http://:$password@dokku-meilisearch-l:7700"
   dokku "$PLUGIN_COMMAND_PREFIX:promote" l my-app
   run dokku config my-app
-  assert_contains "${lines[*]}" "DOKKU_MEILLISEARCH_"
+  assert_contains "${lines[*]}" "DOKKU_MEILISEARCH_"
 }
-@test "($PLUGIN_COMMAND_PREFIX:promote) uses MEILLISEARCH_DATABASE_SCHEME variable" {
+@test "($PLUGIN_COMMAND_PREFIX:promote) uses MEILISEARCH_DATABASE_SCHEME variable" {
   password="$(sudo cat "$PLUGIN_DATA_ROOT/l/PASSWORD")"
-  dokku config:set my-app "MEILLISEARCH_DATABASE_SCHEME=http2" "MEILLISEARCH_URL=http://:p@host:7700" "DOKKU_MEILLISEARCH_BLUE_URL=http2://:$password@dokku-meillisearch-l:7700"
+  dokku config:set my-app "MEILISEARCH_DATABASE_SCHEME=http2" "MEILISEARCH_URL=http://:p@host:7700" "DOKKU_MEILISEARCH_BLUE_URL=http2://:$password@dokku-meilisearch-l:7700"
   dokku "$PLUGIN_COMMAND_PREFIX:promote" l my-app
-  url=$(dokku config:get my-app MEILLISEARCH_URL)
-  assert_contains "$url" "http2://:$password@dokku-meillisearch-l:7700"
+  url=$(dokku config:get my-app MEILISEARCH_URL)
+  assert_contains "$url" "http2://:$password@dokku-meilisearch-l:7700"
 }

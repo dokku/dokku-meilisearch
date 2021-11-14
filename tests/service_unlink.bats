@@ -48,6 +48,6 @@ teardown() {
 @test "($PLUGIN_COMMAND_PREFIX:unlink) unsets config url from app" {
   dokku "$PLUGIN_COMMAND_PREFIX:link" l my-app >&2
   dokku "$PLUGIN_COMMAND_PREFIX:unlink" l my-app
-  config=$(dokku config:get my-app MEILLISEARCH_URL || true)
+  config=$(dokku config:get my-app MEILISEARCH_URL || true)
   assert_equal "$config" ""
 }
