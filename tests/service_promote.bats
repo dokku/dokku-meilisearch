@@ -55,7 +55,7 @@ teardown() {
 }
 @test "($PLUGIN_COMMAND_PREFIX:promote) uses MEILLISEARCH_DATABASE_SCHEME variable" {
   password="$(sudo cat "$PLUGIN_DATA_ROOT/l/PASSWORD")"
-  dokku config:set my-app "MEILLISEARCH_DATABASE_SCHEME=meillisearch2" "MEILLISEARCH_URL=http://:p@host:7700" "DOKKU_MEILLISEARCH_BLUE_URL=http2://:$password@dokku-meillisearch-l:7700"
+  dokku config:set my-app "MEILLISEARCH_DATABASE_SCHEME=http2" "MEILLISEARCH_URL=http://:p@host:7700" "DOKKU_MEILLISEARCH_BLUE_URL=http2://:$password@dokku-meillisearch-l:7700"
   dokku "$PLUGIN_COMMAND_PREFIX:promote" l my-app
   url=$(dokku config:get my-app MEILLISEARCH_URL)
   assert_contains "$url" "http2://:$password@dokku-meillisearch-l:7700"

@@ -92,7 +92,7 @@ teardown() {
 }
 
 @test "($PLUGIN_COMMAND_PREFIX:link) uses apps MEILLISEARCH_DATABASE_SCHEME variable" {
-  dokku config:set my-app MEILLISEARCH_DATABASE_SCHEME=meillisearch2
+  dokku config:set my-app MEILLISEARCH_DATABASE_SCHEME=http2
   dokku "$PLUGIN_COMMAND_PREFIX:link" l my-app
   url=$(dokku config:get my-app MEILLISEARCH_URL)
   password="$(sudo cat "$PLUGIN_DATA_ROOT/l/PASSWORD")"
