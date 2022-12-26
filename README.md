@@ -29,6 +29,7 @@ meilisearch:linked <service> <app>                 # check if the meilisearch se
 meilisearch:links <service>                        # list all apps linked to the meilisearch service
 meilisearch:list                                   # list all meilisearch services
 meilisearch:logs <service> [-t|--tail] <tail-num-optional> # print the most recent log(s) for this service
+meilisearch:pause <service>                        # pause a running meilisearch service
 meilisearch:promote <service> <app>                # promote service <service> as MEILISEARCH_URL in <app>
 meilisearch:restart <service>                      # graceful shutdown and restart of the meilisearch service container
 meilisearch:start <service>                        # start a previously stopped meilisearch service
@@ -343,10 +344,23 @@ dokku meilisearch:start lollipop
 dokku meilisearch:stop <service>
 ```
 
-Stop the service and the running container:
+Stop the service and removes the running container:
 
 ```shell
 dokku meilisearch:stop lollipop
+```
+
+### pause a running meilisearch service
+
+```shell
+# usage
+dokku meilisearch:pause <service>
+```
+
+Pause the running container for the service:
+
+```shell
+dokku meilisearch:pause lollipop
 ```
 
 ### graceful shutdown and restart of the meilisearch service container
