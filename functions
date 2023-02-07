@@ -68,15 +68,15 @@ service_create_container() {
   local SERVICE_NAME="$(get_service_name "$SERVICE")"
   local PASSWORD="$(service_password "$SERVICE")"
   local DATABASE_NAME="$(get_database_name "$SERVICE")"
-  local PREVIOUS_ID
 
   if [[ -f "$SERVICE_ROOT/CONFIG_OPTIONS" ]]; then
     export CONFIG_OPTIONS="$(cat "$SERVICE_ROOT/CONFIG_OPTIONS")"
   fi
 
+  rm -f "$SERVICE_ROOT/ID"
   declare -a DOCKER_ARGS
   DOCKER_ARGS=()
-  DOCKER_ARGS+=("--detach")
+  DOCKER_ARGS+=("--cidfile=$SERVICE_ROOT/ID")
   DOCKER_ARGS+=("--env-file=$SERVICE_ROOT/ENV")
   DOCKER_ARGS+=("--env=MEILI_HTTP_ADDR=0.0.0.0:7700")
   DOCKER_ARGS+=("--env=MEILI_MASTER_KEY=$PASSWORD")
@@ -115,8 +115,8 @@ service_create_container() {
   fi
 
   # shellcheck disable=SC2086
-  ID=$("$DOCKER_BIN" container run "${DOCKER_ARGS[@]}" "$PLUGIN_IMAGE:$PLUGIN_IMAGE_VERSION" $CONFIG_OPTIONS)
-  echo "$ID" >"$SERVICE_ROOT/ID"
+  "$DOCKER_BIN" container create "${DOCKER_ARGS[@]}" "$PLUGIN_IMAGE:$PLUGIN_IMAGE_VERSION" $CONFIG_OPTIONS >/dev/null
+  "$DOCKER_BIN" container start "$(cat "$SERVICE_ROOT/ID")" >/dev/null
 
   dokku_log_verbose_quiet "Waiting for container to be ready"
   "$DOCKER_BIN" container run "${LINK_CONTAINER_DOCKER_ARGS[@]}" "$PLUGIN_WAIT_IMAGE" -c "$SERVICE_NAME:$PLUGIN_DATASTORE_WAIT_PORT" >/dev/null
