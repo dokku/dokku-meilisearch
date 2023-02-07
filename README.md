@@ -32,6 +32,7 @@ meilisearch:logs <service> [-t|--tail] <tail-num-optional> # print the most rece
 meilisearch:pause <service>                        # pause a running meilisearch service
 meilisearch:promote <service> <app>                # promote service <service> as MEILISEARCH_URL in <app>
 meilisearch:restart <service>                      # graceful shutdown and restart of the meilisearch service container
+meilisearch:set <service> <key> <value>            # set or clear a property for a service
 meilisearch:start <service>                        # start a previously stopped meilisearch service
 meilisearch:stop <service>                         # stop a running meilisearch service
 meilisearch:unexpose <service>                     # unexpose a previously exposed meilisearch service
@@ -236,6 +237,25 @@ You can unlink a meilisearch service:
 
 ```shell
 dokku meilisearch:unlink lollipop playground
+```
+
+### set or clear a property for a service
+
+```shell
+# usage
+dokku meilisearch:set <service> <key> <value>
+```
+
+Set the network to attach after the service container is started:
+
+```shell
+dokku meilisearch:set lollipop post-create-network custom-network
+```
+
+Unset the post-create-network value:
+
+```shell
+dokku meilisearch:set lollipop post-create-network
 ```
 
 ### Service Lifecycle
