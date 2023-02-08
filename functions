@@ -81,7 +81,7 @@ service_create_container() {
   DOCKER_ARGS+=("--env=MEILI_HTTP_ADDR=0.0.0.0:7700")
   DOCKER_ARGS+=("--env=MEILI_MASTER_KEY=$PASSWORD")
   DOCKER_ARGS+=("--env=MEILI_NO_ANALYTICS=true")
-  DOCKER_ARGS+=("--hostname=$SERVICE")
+  DOCKER_ARGS+=("--hostname=$SERVICE_NAME")
   DOCKER_ARGS+=("--label=dokku.service=$PLUGIN_COMMAND_PREFIX")
   DOCKER_ARGS+=("--label=dokku=service")
   DOCKER_ARGS+=("--name=$SERVICE_NAME")
