@@ -32,6 +32,7 @@ meilisearch:logs <service> [-t|--tail] <tail-num-optional> # print the most rece
 meilisearch:pause <service>                        # pause a running meilisearch service
 meilisearch:promote <service> <app>                # promote service <service> as MEILISEARCH_URL in <app>
 meilisearch:restart <service>                      # graceful shutdown and restart of the meilisearch service container
+meilisearch:set <service> <key> <value>            # set or clear a property for a service
 meilisearch:start <service>                        # start a previously stopped meilisearch service
 meilisearch:stop <service>                         # stop a running meilisearch service
 meilisearch:unexpose <service>                     # unexpose a previously exposed meilisearch service
@@ -99,7 +100,10 @@ flags:
 - `--exposed-ports`: show service exposed ports
 - `--id`: show the service container id
 - `--internal-ip`: show the service internal ip
+- `--initial-network`: show the initial network being connected to
 - `--links`: show the service app links
+- `--post-create-network`: show the networks to attach to after service container creation
+- `--post-start-network`: show the networks to attach to after service container start
 - `--service-root`: show the service root directory
 - `--status`: show the service running status
 - `--version`: show the service image version
@@ -119,7 +123,10 @@ dokku meilisearch:info lollipop --dsn
 dokku meilisearch:info lollipop --exposed-ports
 dokku meilisearch:info lollipop --id
 dokku meilisearch:info lollipop --internal-ip
+dokku meilisearch:info lollipop --initial-network
 dokku meilisearch:info lollipop --links
+dokku meilisearch:info lollipop --post-create-network
+dokku meilisearch:info lollipop --post-start-network
 dokku meilisearch:info lollipop --service-root
 dokku meilisearch:info lollipop --status
 dokku meilisearch:info lollipop --version
@@ -236,6 +243,31 @@ You can unlink a meilisearch service:
 
 ```shell
 dokku meilisearch:unlink lollipop playground
+```
+
+### set or clear a property for a service
+
+```shell
+# usage
+dokku meilisearch:set <service> <key> <value>
+```
+
+Set the network to attach after the service container is started:
+
+```shell
+dokku meilisearch:set lollipop post-create-network custom-network
+```
+
+Set multiple networks:
+
+```shell
+dokku meilisearch:set lollipop post-create-network custom-network,other-network
+```
+
+Unset the post-create-network value:
+
+```shell
+dokku meilisearch:set lollipop post-create-network
 ```
 
 ### Service Lifecycle
