@@ -1,6 +1,6 @@
 # dokku meilisearch [![Build Status](https://img.shields.io/github/actions/workflow/status/dokku/dokku-meilisearch/ci.yml?branch=master&style=flat-square "Build Status")](https://github.com/dokku/dokku-meilisearch/actions/workflows/ci.yml?query=branch%3Amaster) [![IRC Network](https://img.shields.io/badge/irc-libera-blue.svg?style=flat-square "IRC Libera")](https://webchat.libera.chat/?channels=dokku)
 
-Official meilisearch plugin for dokku. Currently defaults to installing [getmeili/meilisearch v1.0.0](https://hub.docker.com/r/getmeili/meilisearch/).
+Official meilisearch plugin for dokku. Currently defaults to installing [getmeili/meilisearch v1.0.2](https://hub.docker.com/r/getmeili/meilisearch/).
 
 ## Requirements
 
@@ -188,6 +188,7 @@ flags:
 
 - `-a|--alias "BLUE_DATABASE"`: an alternative alias to use for linking to an app via environment variable
 - `-q|--querystring "pool=5"`: ampersand delimited querystring arguments to append to the service link
+- `-n|--no-restart "false"`: whether or not to restart the app on link (default: true)
 
 A meilisearch service can be linked to a container. This will use native docker links via the docker-options plugin. Here we link it to our `playground` app.
 
@@ -211,7 +212,7 @@ DOKKU_MEILISEARCH_LOLLIPOP_PORT_7700_TCP_ADDR=172.17.0.1
 The following will be set on the linked application by default:
 
 ```
-MEILISEARCH_URL=http://lollipop:SOME_PASSWORD@dokku-meilisearch-lollipop:7700/lollipop
+MEILISEARCH_URL=http://:SOME_PASSWORD@dokku-meilisearch-lollipop:7700
 ```
 
 The host exposed here only works internally in docker containers. If you want your container to be reachable from outside, you should use the `expose` subcommand. Another service can be linked to your app:
@@ -230,7 +231,7 @@ dokku meilisearch:link lollipop playground
 This will cause `MEILISEARCH_URL` to be set as:
 
 ```
-http2://lollipop:SOME_PASSWORD@dokku-meilisearch-lollipop:7700/lollipop
+http2://:SOME_PASSWORD@dokku-meilisearch-lollipop:7700
 ```
 
 ### unlink the meilisearch service from the app
@@ -239,6 +240,10 @@ http2://lollipop:SOME_PASSWORD@dokku-meilisearch-lollipop:7700/lollipop
 # usage
 dokku meilisearch:unlink <service> <app>
 ```
+
+flags:
+
+- `-n|--no-restart "false"`: whether or not to restart the app on unlink (default: true)
 
 You can unlink a meilisearch service:
 
@@ -426,7 +431,7 @@ flags:
 - `-I|--image-version IMAGE_VERSION`: the image version to start the service with
 - `-N|--initial-network INITIAL_NETWORK`: the initial network to attach the service to
 - `-P|--post-create-network NETWORKS`: a comman-separated list of networks to attach the service container to after service creation
-- `-R|--restart-apps "true"`: whether to force an app restart
+- `-R|--restart-apps "true"`: whether or not to force an app restart (default: false)
 - `-S|--post-start-network NETWORKS`: a comman-separated list of networks to attach the service container to after service start
 - `-s|--shm-size SHM_SIZE`: override shared memory size for meilisearch docker container
 
