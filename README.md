@@ -212,7 +212,7 @@ DOKKU_MEILISEARCH_LOLLIPOP_PORT_7700_TCP_ADDR=172.17.0.1
 The following will be set on the linked application by default:
 
 ```
-MEILISEARCH_URL=http://lollipop:SOME_PASSWORD@dokku-meilisearch-lollipop:7700/lollipop
+MEILISEARCH_URL=http://:SOME_PASSWORD@dokku-meilisearch-lollipop:7700
 ```
 
 The host exposed here only works internally in docker containers. If you want your container to be reachable from outside, you should use the `expose` subcommand. Another service can be linked to your app:
@@ -231,13 +231,7 @@ dokku meilisearch:link lollipop playground
 This will cause `MEILISEARCH_URL` to be set as:
 
 ```
-http2://lollipop:SOME_PASSWORD@dokku-meilisearch-lollipop:7700/lollipop
-```
-
-If you specify `MEILISEARCH_DATABASE_SCHEME` to equal `http`, we`ll also automatically adjust `MEILISEARCH_URL` to match the http interface:
-
-```
-http://lollipop:SOME_PASSWORD@dokku-meilisearch-lollipop:${PLUGIN_DATASTORE_PORTS[1]}
+http2://:SOME_PASSWORD@dokku-meilisearch-lollipop:7700
 ```
 
 ### unlink the meilisearch service from the app
