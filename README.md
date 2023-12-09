@@ -81,7 +81,7 @@ export MEILISEARCH_IMAGE_VERSION="${PLUGIN_IMAGE_VERSION}"
 dokku meilisearch:create lollipop
 ```
 
-You can also specify custom environment variables to start the meilisearch service in semi-colon separated form.
+You can also specify custom environment variables to start the meilisearch service in semicolon-separated form.
 
 ```shell
 export MEILISEARCH_CUSTOM_ENV="USER=alpha;HOST=beta"
