@@ -1,6 +1,6 @@
 # dokku meilisearch [![Build Status](https://img.shields.io/github/actions/workflow/status/dokku/dokku-meilisearch/ci.yml?branch=master&style=flat-square "Build Status")](https://github.com/dokku/dokku-meilisearch/actions/workflows/ci.yml?query=branch%3Amaster) [![IRC Network](https://img.shields.io/badge/irc-libera-blue.svg?style=flat-square "IRC Libera")](https://webchat.libera.chat/?channels=dokku)
 
-Official meilisearch plugin for dokku. Currently defaults to installing [getmeili/meilisearch v1.4.1](https://hub.docker.com/r/getmeili/meilisearch/).
+Official meilisearch plugin for dokku. Currently defaults to installing [getmeili/meilisearch v1.5.0](https://hub.docker.com/r/getmeili/meilisearch/).
 
 ## Requirements
 
@@ -73,7 +73,7 @@ Create a meilisearch service named lollipop:
 dokku meilisearch:create lollipop
 ```
 
-You can also specify the image and image version to use for the service. It _must_ be compatible with the getmeili/meilisearch image.
+You can also specify the image and image version to use for the service. It *must* be compatible with the getmeili/meilisearch image.
 
 ```shell
 export MEILISEARCH_IMAGE="getmeili/meilisearch"
