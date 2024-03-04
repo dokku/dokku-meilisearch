@@ -597,6 +597,8 @@ service_link() {
   declare SERVICE="$1" APP="$2"
   update_plugin_scheme_for_app "$APP"
   local SERVICE_URL=$(service_url "$SERVICE")
+  local SERVICE_URL_SAFE=$(service_url_safe "$SERVICE")
+  local PASSWORD=$(service_password "$SERVICE")
   local SERVICE_NAME="$(get_service_name "$SERVICE")"
   local SERVICE_ROOT="$PLUGIN_DATA_ROOT/$SERVICE"
   local EXISTING_CONFIG=$(config_all "$APP")
@@ -635,7 +637,12 @@ service_link() {
     config_set --no-restart "$APP" "${ALIAS}_URL=$SERVICE_URL"
     dokku_log_verbose "Skipping restart of linked app"
   else
-    config_set "$APP" "${ALIAS}_URL=$SERVICE_URL"
+    if [[ "$SERVICE_UNIFIED" == "true"]]; then
+      config_set "$APP" "${ALIAS}_URL=$SERVICE_URL"
+    else
+      config_set "$APP" "${ALIAS}_URL=$SERVICE_URL_SAFE"
+      config_set "$APP" "${ALIAS}_MASTER_KEY=$PASSWORD"
+    fi
   fi
   plugn trigger service-action post-link-complete "$PLUGIN_COMMAND_PREFIX" "$SERVICE" "$APP"
 }
@@ -720,6 +727,7 @@ service_parse_args() {
       "--post-create-network") set -- "$@" "-P" ;;
       "--post-start-network") set -- "$@" "-S" ;;
       "--querystring") set -- "$@" "-q" ;;
+      "--unified") set -- "$@" "-U" ;;
       "--restart-apps") set -- "$@" "-R" ;;
       "--root-password") set -- "$@" "-r" ;;
       "--shm-size") set -- "$@" "-s" ;;
@@ -767,6 +775,9 @@ service_parse_args() {
         ;;
       q)
         export SERVICE_QUERYSTRING=${OPTARG#"?"}
+        ;;
+      U)
+        export SERVICE_UNIFIED=false
         ;;
       R)
         export SERVICE_RESTART_APPS=$OPTARG

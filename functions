@@ -214,3 +214,12 @@ service_url() {
   local PASSWORD="$(service_password "$SERVICE")"
   echo "$PLUGIN_SCHEME://:$PASSWORD@$SERVICE_DNS_HOSTNAME:${PLUGIN_DATASTORE_PORTS[0]}"
 }
+
+service_url_safe() {
+  local SERVICE="$1"
+  local SERVICE_DNS_HOSTNAME="$(service_dns_hostname "$SERVICE")"
+  local DATABASE_NAME="$(get_database_name "$SERVICE")"
+  local PASSWORD="$(service_password "$SERVICE")"
+  echo "$PLUGIN_SCHEME://$SERVICE_DNS_HOSTNAME:${PLUGIN_DATASTORE_PORTS[0]}"
+}
+
