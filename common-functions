@@ -640,8 +640,7 @@ service_link() {
     if [[ "$SERVICE_UNIFIED" == "true" ]]; then
       config_set "$APP" "${ALIAS}_URL=$SERVICE_URL"
     else
-      config_set "$APP" "${ALIAS}_URL=$SERVICE_URL_SAFE"
-      config_set "$APP" "${ALIAS}_MASTER_KEY=$PASSWORD"
+      config_set "$APP" "${ALIAS}_URL=$SERVICE_URL_SAFE" "${ALIAS}_MASTER_KEY=$PASSWORD"
     fi
   fi
   plugn trigger service-action post-link-complete "$PLUGIN_COMMAND_PREFIX" "$SERVICE" "$APP"
@@ -737,7 +736,7 @@ service_parse_args() {
   done
 
   OPTIND=1
-  while getopts "na:c:C:d:i:I:m:n:N:p:P:q:R:r:s:S:u:" opt; do
+  while getopts "na:c:C:d:i:I:m:n:N:p:P:q:U:R:r:s:S:u:" opt; do
     case "$opt" in
       a)
         SERVICE_ALIAS="${OPTARG^^}"
