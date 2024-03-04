@@ -67,6 +67,22 @@ teardown() {
   dokku "$PLUGIN_COMMAND_PREFIX:unlink" ls my-app
 }
 
+@test "($PLUGIN_COMMAND_PREFIX:link) exports MEILISEARCH_URL and MEILISEARCH_MASTER_KEY to app" {
+  run dokku "$PLUGIN_COMMAND_PREFIX:link" ls my-app -U false
+  echo "output: $output"
+  echo "status: $status"
+  url=$(dokku config:get my-app MEILISEARCH_URL)
+  password="$(sudo cat "$PLUGIN_DATA_ROOT/ls/PASSWORD")"
+
+  assert_contains "$url" "http://dokku-meilisearch-ls:7700"
+  assert_success
+
+  assert_contains "${lines[*]}" "MEILISEARCH_MASTER_KEY"
+  assert_success
+
+  dokku "$PLUGIN_COMMAND_PREFIX:unlink" ls my-app
+}
+
 @test "($PLUGIN_COMMAND_PREFIX:link) generates an alternate config url when MEILISEARCH_URL already in use" {
   dokku config:set my-app MEILISEARCH_URL=http://user:pass@host:7700/db
   dokku "$PLUGIN_COMMAND_PREFIX:link" ls my-app
