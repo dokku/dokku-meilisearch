@@ -782,7 +782,7 @@ service_parse_args() {
         export SERVICE_QUERYSTRING=${OPTARG#"?"}
         ;;
       U)
-        export SERVICE_UNIFIED=$OPTARG
+        export SERVICE_UNIFIED=${OPTARG:-true}
         ;;
       R)
         export SERVICE_RESTART_APPS=$OPTARG
