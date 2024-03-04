@@ -637,7 +637,7 @@ service_link() {
     config_set --no-restart "$APP" "${ALIAS}_URL=$SERVICE_URL"
     dokku_log_verbose "Skipping restart of linked app"
   else
-    if [[ "$SERVICE_UNIFIED" == "true"]]; then
+    if [[ "$SERVICE_UNIFIED" == "true" ]]; then
       config_set "$APP" "${ALIAS}_URL=$SERVICE_URL"
     else
       config_set "$APP" "${ALIAS}_URL=$SERVICE_URL_SAFE"
