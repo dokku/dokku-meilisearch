@@ -634,7 +634,13 @@ service_link() {
   [[ -n "$SERVICE_QUERYSTRING" ]] && SERVICE_URL="${SERVICE_URL}?${SERVICE_QUERYSTRING}"
   plugn trigger service-action post-link "$PLUGIN_COMMAND_PREFIX" "$SERVICE" "$APP"
   if [[ "$DOKKU_GLOBAL_FLAGS" == *"--no-restart"* ]] || [[ "$SERVICE_RESTART_APPS" == "false" ]]; then
-    config_set --no-restart "$APP" "${ALIAS}_URL=$SERVICE_URL"
+
+    if [[ "$SERVICE_UNIFIED" == "true" ]]; then
+      config_set --no-restart "$APP" "${ALIAS}_URL=$SERVICE_URL"
+    else
+      config_set --no-restart "$APP" "${ALIAS}_URL=$SERVICE_URL_SAFE" "${ALIAS}_MASTER_KEY=$PASSWORD"
+    fi
+
     dokku_log_verbose "Skipping restart of linked app"
   else
     if [[ "$SERVICE_UNIFIED" == "true" ]]; then
@@ -776,7 +782,7 @@ service_parse_args() {
         export SERVICE_QUERYSTRING=${OPTARG#"?"}
         ;;
       U)
-        export SERVICE_UNIFIED=false
+        export SERVICE_UNIFIED=$OPTARG
         ;;
       R)
         export SERVICE_RESTART_APPS=$OPTARG
