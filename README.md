@@ -11,7 +11,7 @@ Official meilisearch plugin for dokku. Currently defaults to installing [getmeil
 
 ```shell
 # on 0.19.x+
-sudo dokku plugin:install https://github.com/dokku/dokku-meilisearch.git meilisearch
+sudo dokku plugin:install https://github.com/dokku/dokku-meilisearch.git --name meilisearch
 ```
 
 ## Commands
