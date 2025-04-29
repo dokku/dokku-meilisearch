@@ -318,7 +318,7 @@ Expose the service on the service's normal ports, allowing access to it from the
 dokku meilisearch:expose lollipop 7700
 ```
 
-Expose the service on the service's normal ports, with the first on a specified ip adddress (127.0.0.1):
+Expose the service on the service's normal ports, with the first on a specified ip address (127.0.0.1):
 
 ```shell
 dokku meilisearch:expose lollipop 127.0.0.1:7700
@@ -498,6 +498,7 @@ List all apps linked to the `lollipop` meilisearch service.
 ```shell
 dokku meilisearch:links lollipop
 ```
+
 ### Backups
 
 Datastore backups are supported via AWS S3 and S3 compatible services like [minio](https://github.com/minio/minio).
