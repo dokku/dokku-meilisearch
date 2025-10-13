@@ -1,1 +1,1 @@
-FROM getmeili/meilisearch:v1.22.3
+FROM getmeili/meilisearch:v1.23.0
