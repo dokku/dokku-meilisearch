@@ -1,6 +1,6 @@
 # dokku meilisearch [![Build Status](https://img.shields.io/github/actions/workflow/status/dokku/dokku-meilisearch/ci.yml?branch=master&style=flat-square "Build Status")](https://github.com/dokku/dokku-meilisearch/actions/workflows/ci.yml?query=branch%3Amaster) [![IRC Network](https://img.shields.io/badge/irc-libera-blue.svg?style=flat-square "IRC Libera")](https://webchat.libera.chat/?channels=dokku)
 
-Official meilisearch plugin for dokku. Currently defaults to installing [getmeili/meilisearch v1.22.3](https://hub.docker.com/r/getmeili/meilisearch/).
+Official meilisearch plugin for dokku. Currently defaults to installing [getmeili/meilisearch v1.23.0](https://hub.docker.com/r/getmeili/meilisearch/).
 
 ## Requirements
 
