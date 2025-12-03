@@ -1,4 +1,4 @@
 [plugin]
 description = "dokku meilisearch service plugin"
-version = "1.61.0"
+version = "1.61.1"
 [plugin.config]
