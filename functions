@@ -88,7 +88,7 @@ service_create_container() {
   DOCKER_ARGS+=("--label=dokku=service")
   DOCKER_ARGS+=("--name=$SERVICE_NAME")
   DOCKER_ARGS+=("--restart=always")
-  DOCKER_ARGS+=("--volume=$SERVICE_HOST_ROOT/data:/data.ms")
+  DOCKER_ARGS+=("--volume=$SERVICE_HOST_ROOT/data:/meili_data")
 
   declare -a LINK_CONTAINER_DOCKER_ARGS
   LINK_CONTAINER_DOCKER_ARGS=()
