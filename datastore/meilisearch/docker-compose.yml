@@ -1,0 +1,44 @@
+---
+services:
+  meilisearch:
+    image: "{{ .Image }}:{{ .ImageVersion }}"
+
+    environment:
+      # the image listens on localhost unless it is told otherwise, which
+      # nothing outside the container could then reach
+      MEILI_HTTP_ADDR: "0.0.0.0:7700"
+      MEILI_MASTER_KEY: "{{ .Secret.password }}"
+      MEILI_NO_ANALYTICS: "true"
+
+    volumes:
+      - type: bind
+        source: "{{ .HostRoot }}/data"
+        target: /meili_data
+
+    ports:
+      - name: native
+        target: 7700
+        primary: true
+
+x-dokku:
+  plugin: meilisearch
+  title: Meilisearch
+  scheme: http
+  alias: MEILISEARCH
+  alt_alias: DOKKU_MEILISEARCH
+  dsn: "{{ .Scheme }}://:{{ .Secret.password }}@{{ .Host }}:{{ .Port.native }}"
+
+  # the image ships no client whose exit status could answer a healthcheck
+  wait: native
+
+  secrets:
+    password:
+      file: PASSWORD
+      length: 16
+      env: SERVICE_PASSWORD
+
+  # meilisearch is reached over http rather than with a client, and its dumps
+  # are asked for through that same api rather than written to a stream, so
+  # there is nothing to connect with and nothing to pipe out. Clone and the
+  # backup family fall out of that, which is the list the bash plugin kept by
+  # hand.
