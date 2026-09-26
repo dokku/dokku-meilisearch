@@ -1,6 +1,6 @@
 # dokku meilisearch [![Build Status](https://img.shields.io/github/actions/workflow/status/dokku/dokku-meilisearch/ci.yml?branch=master&style=flat-square "Build Status")](https://github.com/dokku/dokku-meilisearch/actions/workflows/ci.yml?query=branch%3Amaster) [![IRC Network](https://img.shields.io/badge/irc-libera-blue.svg?style=flat-square "IRC Libera")](https://webchat.libera.chat/?channels=dokku)
 
-Official meilisearch plugin for dokku. Currently defaults to installing [getmeili/meilisearch v1.53.2](https://hub.docker.com/r/getmeili/meilisearch/).
+Official meilisearch plugin for dokku. Currently defaults to installing [getmeili/meilisearch v1.54.0](https://hub.docker.com/r/getmeili/meilisearch/).
 
 ## Requirements
 
@@ -83,7 +83,7 @@ You can also specify the image and image version to use for the service. It *mus
 
 ```shell
 export MEILISEARCH_IMAGE="getmeili/meilisearch"
-export MEILISEARCH_IMAGE_VERSION="v1.53.2"
+export MEILISEARCH_IMAGE_VERSION="v1.54.0"
 dokku meilisearch:create lollipop
 ```
 
@@ -481,7 +481,7 @@ The lifecycle of each service can be managed through the following commands:
 dokku meilisearch:enter <service>
 ```
 
-A bash prompt can be opened against a running service. Filesystem changes will not be saved to disk.
+A shell can be opened against a running service. Filesystem changes will not be saved to disk.
 
 > NOTE: disconnecting from ssh while running this command may leave zombie processes due to moby/moby#9098
 
