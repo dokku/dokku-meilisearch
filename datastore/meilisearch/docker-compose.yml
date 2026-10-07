@@ -42,3 +42,14 @@ x-dokku:
   # there is nothing to connect with and nothing to pipe out. Clone and the
   # backup family fall out of that, which is the list the bash plugin kept by
   # hand.
+  commands:
+    # beside the service, in an image dokku already ships that has python, since
+    # the meilisearch image ships no client. The indexes are deleted through the
+    # api rather than the data directory emptied, which would take the keys an
+    # app authenticates with along with them.
+    reset:
+      mode: sidecar
+      image: dokku/s3backup:0.20.0
+      exec: ["dokku-meilisearch-reset"]
+      env:
+        MEILISEARCH_MASTER_KEY: "{{ .Secret.password }}"

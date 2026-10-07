@@ -1,6 +1,6 @@
 # dokku meilisearch [![Build Status](https://img.shields.io/github/actions/workflow/status/dokku/dokku-meilisearch/ci.yml?branch=master&style=flat-square "Build Status")](https://github.com/dokku/dokku-meilisearch/actions/workflows/ci.yml?query=branch%3Amaster) [![IRC Network](https://img.shields.io/badge/irc-libera-blue.svg?style=flat-square "IRC Libera")](https://webchat.libera.chat/?channels=dokku)
 
-Official meilisearch plugin for dokku. Currently defaults to installing [getmeili/meilisearch v1.54.0](https://hub.docker.com/r/getmeili/meilisearch/).
+Official meilisearch plugin for dokku. Currently defaults to installing [getmeili/meilisearch v1.54.3](https://hub.docker.com/r/getmeili/meilisearch/).
 
 ## Requirements
 
@@ -33,6 +33,7 @@ meilisearch:mount [--replace] <service> <source:container-dir[:options]>... # mo
 meilisearch:pause <service>                        # pause a running Meilisearch service
 meilisearch:promote <service> [<app>]              # promote service <service> as MEILISEARCH_URL in <app>
 meilisearch:reexpose <service>                     # reexpose a Meilisearch service, applying its expose settings
+meilisearch:reset <service> [-f|--force]           # delete all data in the Meilisearch service, keeping the service and its links
 meilisearch:restart <service>                      # graceful shutdown and restart of the Meilisearch service container
 meilisearch:set <service> <key> <value>            # set or clear a property for a service
 meilisearch:start <service>                        # start a previously stopped Meilisearch service
@@ -87,7 +88,7 @@ You can also specify the image and image version to use for the service. It *mus
 
 ```shell
 export MEILISEARCH_IMAGE="getmeili/meilisearch"
-export MEILISEARCH_IMAGE_VERSION="v1.54.0"
+export MEILISEARCH_IMAGE_VERSION="v1.54.3"
 dokku meilisearch:create lollipop
 ```
 
@@ -178,10 +179,13 @@ flags:
 - `--backup-encryption-fingerprint`: show a sha256 fingerprint of the stored backup passphrase
 - `--backup-endpoint-url`: show the s3-compatible endpoint backups are shipped to
 - `--backup-keyserver`: show the keyserver backup public keys are fetched from
+- `--backup-mailto`: show who cron mails the output of scheduled backups to in place of the global MAILTO
+- `--backup-object-name`: show the name backups are uploaded under in place of the default
 - `--backup-public-key-id`: show the gpg public key id backups are encrypted with
 - `--backup-schedule`: show the cron schedule backups run on
 - `--backup-signature-version`: show the signature version backups authenticate with
 - `--backup-storage-class`: show the s3 storage class backups are uploaded with
+- `--backup-timestamp`: show whether backups are uploaded under a key ending in the time they started
 - `--backup-use-iam`: show whether scheduled backups authenticate with an instance role
 - `--config-dir`: show the service configuration directory
 - `--config-options`: show the config options the service container is run with
@@ -472,6 +476,36 @@ Go back to uploading backups with the bucket's default storage class:
 
 ```shell
 dokku meilisearch:set lollipop backup-storage-class
+```
+
+Upload backups under a name of your own rather than meilisearch-lollipop:
+
+```shell
+dokku meilisearch:set lollipop backup-object-name db/latest
+```
+
+Upload every backup to the same key, without a timestamp, so bucket versioning and lifecycle rules can keep and rotate them:
+
+```shell
+dokku meilisearch:set lollipop backup-timestamp false
+```
+
+Go back to timestamped backups:
+
+```shell
+dokku meilisearch:set lollipop backup-timestamp
+```
+
+Mail the output of scheduled backups to a comma-separated list of email addresses or local users rather than to the global cron `MAILTO`. Requires a dokku version that reads json entries from the cron-entries plugin trigger, and a mail transfer agent on the host:
+
+```shell
+dokku meilisearch:set lollipop backup-mailto ops@example.com,dba@example.com
+```
+
+Go back to mailing scheduled backup output to the global cron `MAILTO`:
+
+```shell
+dokku meilisearch:set lollipop backup-mailto
 ```
 
 Cap the container log at a size of your own rather than the one it inherits:
@@ -884,7 +918,7 @@ flags:
 - `-P|--post-create-network <strings>`: a comma-separated list of networks to attach the service container to after service creation
 - `-S|--post-start-network <strings>`: a comma-separated list of networks to attach the service container to after service start
 - `--restart <string>`: the docker restart policy to run the service container with (default: always)
-- `-R|--restart-apps`: whether to stop and start the linked apps around the upgrade
+- `-R|--restart-apps`: whether to stop and start the linked apps around the upgrade, required for one that migrates the data
 - `-s|--shm-size <string>`: override shared memory size for the service docker container
 - `--volume <stringArray>`: a host path or docker volume to mount into the service container, as <source>:<container-dir>[:<options>], repeatable
 - `--volume-target <stringArray>`: mount one of the definition's volumes at another container path, as <volume>=<container-dir>, repeatable
@@ -977,6 +1011,33 @@ dokku meilisearch:links lollipop
 ```
 
 Renaming an app moves its link onto the new name, and cloning an app links the clone as well as the original.
+
+### Data Management
+
+The underlying service data can be imported and exported with the following commands:
+
+### delete all data in the Meilisearch service, keeping the service and its links
+
+```shell
+# usage
+dokku meilisearch:reset <service> [-f|--force]
+```
+
+flags:
+
+- `-f|--force`: reset the service without asking for its name first
+
+Delete all data in the service, leaving it as empty as a newly created one. The service, its credentials, and the apps it is linked to are kept, so linked apps do not need to be relinked. Connections the apps hold open may be closed.
+
+```shell
+dokku meilisearch:reset lollipop
+```
+
+The service name is asked for before anything is deleted, unless --force is given:
+
+```shell
+dokku meilisearch:reset lollipop --force
+```
 
 ### Limiting where and to whom a service is exposed
 
