@@ -37,6 +37,10 @@ x-dokku:
       length: 16
       env: SERVICE_PASSWORD
 
+      # read by the server as it starts, which takes a new master key on an
+      # existing data directory, so a new key is a container made again
+      rebuild: true
+
   # meilisearch is reached over http rather than with a client, and its dumps
   # are asked for through that same api rather than written to a stream, so
   # there is nothing to connect with and nothing to pipe out. Clone and the
