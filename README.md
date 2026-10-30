@@ -1,6 +1,6 @@
 # dokku meilisearch [![Build Status](https://img.shields.io/github/actions/workflow/status/dokku/dokku-meilisearch/ci.yml?branch=master&style=flat-square "Build Status")](https://github.com/dokku/dokku-meilisearch/actions/workflows/ci.yml?query=branch%3Amaster) [![IRC Network](https://img.shields.io/badge/irc-libera-blue.svg?style=flat-square "IRC Libera")](https://webchat.libera.chat/?channels=dokku)
 
-Official meilisearch plugin for dokku. Currently defaults to installing [getmeili/meilisearch v1.55.0](https://hub.docker.com/r/getmeili/meilisearch/).
+Official meilisearch plugin for dokku. Currently defaults to installing [getmeili/meilisearch v1.56.0](https://hub.docker.com/r/getmeili/meilisearch/).
 
 ## Requirements
 
@@ -24,6 +24,7 @@ meilisearch:enter <service>                        # enter or run a command in a
 meilisearch:exists <service>                       # check if the Meilisearch service exists
 meilisearch:expose <service> <ports...>            # expose a Meilisearch service on custom host:port if provided (random port on the 0.0.0.0 interface if otherwise unspecified)
 meilisearch:info [<service>] [--info-flags...]     # print the service information
+meilisearch:label <service> <key=value>...         # add docker labels to the service container
 meilisearch:link <service> [<app>] [--link-flags...] # link the Meilisearch service to the app
 meilisearch:linked <service> [<app>]               # check if the Meilisearch service is linked to an app
 meilisearch:links <service>                        # list all apps linked to the Meilisearch service
@@ -39,6 +40,7 @@ meilisearch:set <service> <key> [<value>] [--id <id>] # set or clear a property 
 meilisearch:start <service>                        # start a previously stopped Meilisearch service
 meilisearch:stop <service>                         # stop a running Meilisearch service
 meilisearch:unexpose <service>                     # unexpose a previously exposed Meilisearch service
+meilisearch:unlabel [--all] <service> [<key>...]   # remove one or all docker labels from the service container
 meilisearch:unlink <service> [<app>] [-n|--no-restart] # unlink the Meilisearch service from the app
 meilisearch:unmount [--all] <service> [<source:container-dir>...] # remove one or all mounts from the service container
 meilisearch:upgrade <service> [--upgrade-flags...] # upgrade service <service> to the specified versions
@@ -59,12 +61,14 @@ dokku meilisearch:create <service> [--create-flags...]
 
 flags:
 
+- `--backend <string>`: the execution backend to create the service with, docker or compose (default: docker)
 - `-c|--config-options <string>`: extra arguments for the process the service container runs, not docker flags; use mount for mounts
 - `-C|--custom-env <string>`: semi-colon delimited environment variables to start the service with
 - `--definition <string>`: the definition to run the service on, instead of the one its image and version resolve to
 - `-i|--image <string>`: the image name to start the service with
 - `-I|--image-version <string>`: the image version to start the service with
 - `-N|--initial-network <string>`: the initial network to attach the service to
+- `--label <stringArray>`: a docker label to put on the service container, as <key>=<value>, repeatable
 - `--log-driver <string>`: the docker logging driver to run the service container with (default: the daemon's own)
 - `--log-opt <strings>`: a comma-separated list of key=value docker log options for the service container
 - `-m|--memory <int>`: container memory limit in megabytes (default: unlimited)
@@ -88,9 +92,7 @@ dokku meilisearch:create lollipop
 You can also specify the image and image version to use for the service. It *must* be compatible with the getmeili/meilisearch image.
 
 ```shell
-export MEILISEARCH_IMAGE="getmeili/meilisearch"
-export MEILISEARCH_IMAGE_VERSION="v1.55.0"
-dokku meilisearch:create lollipop
+dokku meilisearch:create lollipop --image "getmeili/meilisearch" --image-version "v1.56.0"
 ```
 
 An image other than getmeili/meilisearch has no version to fall back on, because the version this plugin pins belongs to getmeili/meilisearch, so name one alongside it.
@@ -102,8 +104,7 @@ dokku meilisearch:create lollipop --image <image> --image-version <version>
 You can also specify custom environment variables to start the meilisearch service in semicolon-separated form.
 
 ```shell
-export MEILISEARCH_CUSTOM_ENV="USER=alpha;HOST=beta"
-dokku meilisearch:create lollipop
+dokku meilisearch:create lollipop --custom-env "USER=alpha;HOST=beta"
 ```
 
 The container log is bounded by whatever `dokku logs:set --global max-size` says, and by dokku's own default where it says nothing, which a service may override for itself.
@@ -118,7 +119,13 @@ The container is restarted by docker whenever it stops, which a service may chan
 dokku meilisearch:create lollipop --restart unless-stopped
 ```
 
-The service is waited on until it answers, for as long as the datastore's own default, which a slow host may raise for every service with `MEILISEARCH_WAIT_TIMEOUT` or a service may raise for itself.
+The container carries a docker label for each --label, which may be repeated, beyond the ones dokku puts on it. Keys starting with `dokku.` or `com.dokku.` are dokku's own and are refused.
+
+```shell
+dokku meilisearch:create lollipop --label traefik.enable=true --label com.example.team=data
+```
+
+The service is waited on until it answers, for as long as the datastore's own default, which a slow host may raise for every service with `dokku meilisearch:set --global wait-timeout` or a service may raise for itself.
 
 ```shell
 dokku meilisearch:create lollipop --wait-timeout 120
@@ -133,7 +140,6 @@ dokku meilisearch:create lollipop --volume /var/lib/dokku/data/storage/lollipop:
 The definition's own volumes can be mounted at another path in the container, for an image that keeps its data somewhere else, with --volume-target, which may be repeated.
 
 ```shell
-export MEILISEARCH_VOLUME_TARGETS="data=/srv/meilisearch"
 dokku meilisearch:create lollipop --volume-target data=/srv/meilisearch
 ```
 
@@ -196,6 +202,7 @@ flags:
 - `--custom-env`: show the custom environment the service container is run with
 - `--data-dir`: show the service data directory
 - `--database-name`: show the name of the database inside the service
+- `--databases`: show the databases an app can be linked to in the service, space separated
 - `--definition`: show the definition the service was created with
 - `--dsn`: show the service DSN
 - `--export-args`: show the extra arguments every export of the service is run with
@@ -209,6 +216,7 @@ flags:
 - `--import-args`: show the extra arguments every import into the service is run with
 - `--initial-network`: show the initial network being connected to
 - `--internal-ip`: show the service internal ip
+- `--labels`: show the docker labels the service container is made with beyond dokku's own, as a json object
 - `--links`: show the service app links
 - `--log-driver`: show the docker logging driver the service container is run with
 - `--log-opt`: show the docker log options the service container is run with
@@ -226,6 +234,7 @@ flags:
 - `--service-root`: show the service root directory
 - `--shm-size`: show the shared memory size the service container is run with
 - `--status`: show the service running status
+- `--users`: show the users an app can be linked as in the service, space separated
 - `--version`: show the service image version
 - `--volume-targets`: show the container paths the service's volumes are mounted at in place of the definition's
 - `--wait-timeout`: show the seconds the service is waited on to become ready
@@ -357,23 +366,12 @@ flags:
 - `-n|--no-restart`: whether to skip restarting the app
 - `-q|--querystring <string>`: ampersand delimited querystring arguments to append to the service url after a ?
 
-A meilisearch service can be linked to a container. This will use native docker links via the docker-options plugin. Here we link it to our `playground` app.
+A meilisearch service can be linked to a container. The app and the service are put on a private docker network made for that link alone, so the app reaches the service as dokku-meilisearch-lollipop, and two apps linked to the same service cannot reach each other through it. The app's running containers join it straight away, and the containers it is built, deployed and run in from then on join it when they are made. Here we link it to our `playground` app.
 
 > NOTE: this will restart your app
 
 ```shell
 dokku meilisearch:link lollipop playground
-```
-
-The following environment variables will be set automatically by docker (not on the app itself, so they won’t be listed when calling dokku config):
-
-```
-DOKKU_MEILISEARCH_LOLLIPOP_NAME=/lollipop/DATABASE
-DOKKU_MEILISEARCH_LOLLIPOP_PORT=tcp://172.17.0.1:7700
-DOKKU_MEILISEARCH_LOLLIPOP_PORT_7700_TCP=tcp://172.17.0.1:7700
-DOKKU_MEILISEARCH_LOLLIPOP_PORT_7700_TCP_PROTO=tcp
-DOKKU_MEILISEARCH_LOLLIPOP_PORT_7700_TCP_PORT=7700
-DOKKU_MEILISEARCH_LOLLIPOP_PORT_7700_TCP_ADDR=172.17.0.1
 ```
 
 The following will be set on the linked application by default:
@@ -382,7 +380,11 @@ The following will be set on the linked application by default:
 MEILISEARCH_URL=http://:SOME_PASSWORD@dokku-meilisearch-lollipop:7700
 ```
 
-The host exposed here only works internally in docker containers. If you want your container to be reachable from outside, you should use the `expose` subcommand. Another service can be linked to your app:
+The host exposed here only works internally in docker containers. If you want your container to be reachable from outside, you should use the `expose` subcommand. Earlier versions of the plugin linked an app with a docker link, which docker has deprecated, and which set `DOKKU_MEILISEARCH_LOLLIPOP_PORT` style variables on the app's containers. Docker 29 no longer sets them, so an app reading them should read `MEILISEARCH_URL` instead. Updating the plugin moves every linked app onto the network for its link, and the docker link is gone from each app's containers once they are restarted.
+
+> NOTE: every link uses a docker network of its own. docker's default address pools hold about 31 networks, so a server with many links may need a larger default-address-pools setting in /etc/docker/daemon.json.
+
+Another service can be linked to your app:
 
 ```shell
 dokku meilisearch:link other_service playground
@@ -456,7 +458,7 @@ You can unlink a meilisearch service:
 dokku meilisearch:unlink lollipop playground
 ```
 
-An app is still linked after its `MEILISEARCH_URL` is changed to point elsewhere, and is unlinked the same way. The variable it now holds is not the service's, so it is left alone, nothing is unset, the app is not restarted, and a warning says so. A variable link set that has only had its scheme or querystring changed still points at the service, and is unset.
+The network the link ran over is removed straight away, so the app's running containers can no longer reach the service, even with `--no-restart`. An app is still linked after its `MEILISEARCH_URL` is changed to point elsewhere, and is unlinked the same way. The variable it now holds is not the service's, so it is left alone, nothing is unset, the app is not restarted, and a warning says so. A variable link set that has only had its scheme or querystring changed still points at the service, and is unset.
 
 ### set or clear a property for a service
 
@@ -468,6 +470,7 @@ dokku meilisearch:set <service> <key> [<value>] [--id <id>]
 flags:
 
 - `--allow-restart`: restart or reexpose the service when the property only takes effect that way and its value changed
+- `--global`: set the property for every service of the datastore, taking <datastore-type> <key> [<value>] with no service name
 - `--id <string>`: record the property on this backup schedule instead of on the service
 - `--no-restart`: do not restart the linked apps when a password change updates the url they hold
 
@@ -716,6 +719,54 @@ dokku meilisearch:unmount --all lollipop
 
 > NOTE: the mount is removed from the container the next time one is built. meilisearch:restart keeps the container it has, so use meilisearch:stop and then meilisearch:start on a service that is already running.
 
+### add docker labels to the service container
+
+```shell
+# usage
+dokku meilisearch:label <service> <key=value>...
+```
+
+Add a label to the service container:
+
+```shell
+dokku meilisearch:label lollipop traefik.enable=true
+```
+
+Several may be given at once, and a value may hold commas and spaces:
+
+```shell
+dokku meilisearch:label lollipop com.example.team=data "traefik.http.routers.lollipop.middlewares=auth,compress"
+```
+
+Labelling a key the service already has replaces its value. Keys starting with `dokku.` or `com.dokku.` are dokku's own and are refused.
+
+> NOTE: a label reaches the container the next time one is built. meilisearch:restart keeps the container it has, so use meilisearch:stop and then meilisearch:start on a service that is already running.
+
+### remove one or all docker labels from the service container
+
+```shell
+# usage
+dokku meilisearch:unlabel [--all] <service> [<key>...]
+```
+
+flags:
+
+- `--all`: remove every label the service has
+
+Remove a label, naming it by its key:
+
+```shell
+dokku meilisearch:unlabel lollipop traefik.enable
+```
+
+Remove every label the service was given:
+
+```shell
+dokku meilisearch:unlabel --all lollipop
+```
+
+> NOTE: the label is removed from the container the next time one is built. meilisearch:restart keeps the container it has, so use meilisearch:stop and then meilisearch:start on a service that is already running.
+
 ### Service Lifecycle
 
 The lifecycle of each service can be managed through the following commands:
@@ -935,6 +986,7 @@ flags:
 - `-i|--image <string>`: the image to upgrade the service to
 - `-I|--image-version <string>`: the image version to upgrade the service to
 - `-N|--initial-network <string>`: the initial network to attach the service to
+- `--label <stringArray>`: a docker label to put on the service container, as <key>=<value>, repeatable; replaces every label the service has
 - `--log-driver <string>`: the docker logging driver to run the service container with (default: the daemon's own)
 - `--log-opt <strings>`: a comma-separated list of key=value docker log options for the service container
 - `-m|--memory <int>`: container memory limit in megabytes, 0 for unlimited
@@ -1066,7 +1118,7 @@ dokku meilisearch:reset lollipop --force
 
 ### Service properties
 
-Every setting a service has after it is created, other than its image, its mounts and its backup schedule, each of which has a command of its own, is changed with `dokku meilisearch:set lollipop <key> <value>`, and cleared by giving no value. `dokku meilisearch:info lollipop` reports each of them, with a credential reported as a fingerprint rather than its value. A setting the container is made with only reaches it once the container is built again, and `set` warns when that is the case: `dokku meilisearch:restart` keeps the container the service has, so use `dokku meilisearch:stop` and then `dokku meilisearch:start`. Passing `--allow-restart` to `set` does that, or the `reexpose` an expose setting takes, whenever the value changed, and leaves the service alone when it did not.
+Every setting a service has after it is created, other than its image, its mounts, its labels and its backup schedule, each of which has a command of its own, is changed with `dokku meilisearch:set lollipop <key> <value>`, and cleared by giving no value. `dokku meilisearch:info lollipop` reports each of them, with a credential reported as a fingerprint rather than its value. A setting the container is made with only reaches it once the container is built again, and `set` warns when that is the case: `dokku meilisearch:restart` keeps the container the service has, so use `dokku meilisearch:stop` and then `dokku meilisearch:start`. Passing `--allow-restart` to `set` does that, or the `reexpose` an expose setting takes, whenever the value changed, and leaves the service alone when it did not.
 
 | Property | Description | Takes effect |
 | --- | --- | --- |
@@ -1112,11 +1164,11 @@ A `port-source-range` cannot be enforced on a port the service container publish
 
 A service is waited on until it answers on its port after it is created, cloned, started, restarted, upgraded or exposed. If it takes longer than that to start - on a slow host, or with an image that does more on its first boot - the command fails with `ERROR: unable to connect`.
 
-To wait longer for every meilisearch service on the host, set the `MEILISEARCH_WAIT_TIMEOUT` environment variable to a number of seconds. To wait longer for a single service, set its `wait-timeout` property with `dokku meilisearch:set` or pass `--wait-timeout` to `create`, `clone` or `upgrade`. The service's own setting is used first, then the environment variable, then the datastore's default.
+To wait longer for every meilisearch service on the host, set the `wait-timeout` global property to a number of seconds with `dokku meilisearch:set --global wait-timeout 120`. To wait longer for a single service, set its `wait-timeout` property with `dokku meilisearch:set` or pass `--wait-timeout` to `create`, `clone` or `upgrade`. The service's own setting is used first, then the global property, then the datastore's default.
 
 ### Moving where a service's volumes are mounted
 
-Each volume a service mounts is named by the directory it lives in under the service's own directory, and is mounted where the datastore's definition says. To mount one somewhere else in the container, for an image that keeps its data at another path, set the service's `volume-targets` property with `dokku meilisearch:set`, pass `--volume-target` to `create`, `clone` or `upgrade`, or set the `MEILISEARCH_VOLUME_TARGETS` environment variable before `create`. Each is written as `<volume>=<container-path>`, several separated by spaces, and `dokku meilisearch:info lollipop --volume-targets` shows the ones a service moved.
+Each volume a service mounts is named by the directory it lives in under the service's own directory, and is mounted where the datastore's definition says. To mount one somewhere else in the container, for an image that keeps its data at another path, set the service's `volume-targets` property with `dokku meilisearch:set`, or pass `--volume-target` to `create`, `clone` or `upgrade`. Each is written as `<volume>=<container-path>`, several separated by spaces, and `dokku meilisearch:info lollipop --volume-targets` shows the ones a service moved.
 
 | Definition | Volume | Mounted at |
 | --- | --- | --- |
@@ -1126,6 +1178,6 @@ Moving a volume changes where it is mounted, not where the image reads and write
 
 ### Disabling `docker image pull` calls
 
-If you wish to disable the `docker image pull` calls that the plugin triggers, you may set the `MEILISEARCH_DISABLE_PULL` environment variable to `true`. Once disabled, you will need to pull the service image you wish to deploy as shown in the `stderr` output.
+If you wish to disable the `docker image pull` calls that the plugin triggers, you may set the `disable-pull` global property to `true` with `dokku meilisearch:set --global disable-pull true`. Once disabled, you will need to pull the service image you wish to deploy as shown in the `stderr` output.
 
 Please ensure the proper images are in place when `docker image pull` is disabled.
